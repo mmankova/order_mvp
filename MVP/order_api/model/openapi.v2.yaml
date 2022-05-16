@@ -1,0 +1,658 @@
+﻿openapi: "3.0.3"
+
+info:
+  title: "Обмен данными "
+  description: Спецификация содержит описание элементов для получения данных о заказах, которые являются общими для всех API.
+  version: "1.0.0"
+servers:
+- url: http://localhost/todo/api/v1.0
+  description: prod
+security:
+  - BasicAuth : []
+paths:
+   /client:
+    post:
+      operationId: createOrder
+      tags:
+        - Order
+      summary: "Запрос создания заказа клиента"
+      description: "Запрос позволяет создать заказ для клиента"
+      parameters:
+        - $ref: "#/client"
+      
+      requestBody:
+        $ref: "#/components/parameters/createOrderRequestBody"
+
+      responses:
+        201:
+          $ref: "#/components/responses/201createOrder"
+        400:
+          $ref: "#/components/responses/400Error"
+
+      # security:
+      #   - TPPOAuth2Security:
+      #       - vehicles
+
+  /client/{order_id}:
+    get:
+      operationId: get_Order_by_Client
+      tags:
+        - order
+      summary: "Запрос о заказах клиента"
+      description: "Запрос позволяет отображает список заказав клиента"
+
+      parameters:
+        - $ref: "#/components/parameters/order_id"
+
+      responses:
+        200:
+          $ref: "#/components/responses/200Get_Order_by_Client"
+        400:
+          $ref: "#/components/responses/400Error"
+
+
+  /delivery/{order_id}:
+       get:
+      operationId: get_Order_by_Client
+      tags:
+        - order
+      summary: "Запрос о заказах на доставку"
+      description: "Запрос позволяет отображает список заказав на доставку"
+
+      parameters:
+        - $ref: "#/components/parameters/order_id"
+
+      responses:
+        200:
+          $ref: "#/components/responses/200get_Order_by_Client"
+        400:
+          $ref: "#/components/responses/400Error"
+
+  /кestaurant/{order_id}:
+    get:
+      operationId: get_Order_by_Restaurant
+       tags:
+        - order
+      summary: "Запрос о заказах на доставку"
+      description: "Запрос позволяет отображает список заказав на доставку"
+
+      parameters:
+        - $ref: "#/components/parameters/order_id"
+
+      responses:
+        200:
+          $ref: "#/components/responses/200get_Order_by_Restaurant"
+        400:
+          $ref: "#/components/responses/400Error"
+
+
+components:
+  parameters:
+    orderId:
+      description: "Идентификатор заказа"
+      name: orderId
+      in: path
+      required: true
+      schema:
+        description: "Уникальный идентификатор заказа в системе доставки"
+        type: string
+        maxLength: 17
+
+   
+  
+    201createOrder:
+      description: "Информация о ..."
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+        x-jws-signature:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/createOrder"
+
+    200Get_Order_by_Client:
+      description: "Информация о ...."
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+        x-jws-signature:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Get_Order_by_Client"
+
+    200get_Order_by_Client:
+      description: "Информация о ...."
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+        x-jws-signature:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Get_Order_by_Client"
+    
+    200get_Order_by_Restaurant:
+      description: "Информация о ..."
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+        x-jws-signature:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Get_Order_by_Restaurant"
+    400Error:
+      description: "Запрос имеет неверные, отсутствующее или несовместимое тело JSON, параметры URL или поля заголовка"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OBRUErrorResponse"
+
+    401Error:
+      description: "Заголовок авторизации отсутствует или неверный токен"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+
+    403Error:
+      description: "Токен имеет неверную область действия или была нарушена политика безопасности"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OBRUErrorResponse"
+
+    404Error:
+      description: "Сторонний Поставщик пытается получить ресурс, который не определен"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+
+    405Error:
+      description: "Сторонний Поставщик попытался получить доступ к ресурсу с помощью метода, который не поддерживается"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+
+    406Error:
+      description: "Запрос содержал параметр заголовка Accept, отличный от разрешенных media types, и набор символов, отличный от UTF-8"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+
+    415Error:
+      description: "Операция была отклонена, поскольку полезная нагрузка находится в формате, не поддерживаемом этим методом на целевом ресурсе"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+
+    429Error:
+      description: "Операция была отклонена, так как слишком много запросов было сделано в течение определенного периода времени"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+        Retry-After:
+          schema:
+            type: string
+
+    InternalError:
+      description: "Внутренняя ошибка сервера"
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OBRUErrorResponse"
+
+  requestBodies:
+    createOrderRequestBody:
+      description: "Запрос ..."
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/createOrderRequestBody"
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+ 
+  schemas:
+    OBRUErrorResponse:
+      description: "Контейнер с детализацией ошибки"
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: "Высокоуровневый текстовый код ошибки, необходимый для классификации"
+        id:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: "Уникальный идентификатор ошибки, для целей аудита, в случае неизвестных / не классифицированных ошибок"
+        message:
+          minLength: 1
+          maxLength: 500
+          description: "Краткое сообщение об ошибке. Например, «что-то не так с предоставленными параметрами запроса»"
+
+        Errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/OBRUError"
+          minItems: 1
+      required:
+        - code
+        - message
+        - Errors
+
+    OBRUError:
+      description: "Контейнер с ошибкой"
+      type: object
+      additionalProperties: false
+      properties:
+        errorCode:
+          description: Низкоуровневое текстовое описание ошибки в виде кода
+          $ref: "#/components/schemas/OBRUErrorResponseErrorCode"
+        message:
+          type: string
+          maxLength: 500
+          description: Обязательное поле не указано
+          example: Обязательное поле не указано
+        path:
+          type: string
+          maxLength: 500 
+          description: "Путь к элементу с ошибкой в JSON объекте. Рекомендуемое, но не обязательное поле"
+        url:
+          type: string
+          format: uri
+          description: "URL для помощи в устранении проблемы, Также через URL можно предоставлять дополнительную информацию"
+
+      required:
+        - errorCode
+        - message
+
+    OBRUErrorResponseErrorCode:
+      description: Низкоуровневое текстовое описание ошибки в виде кода
+      type: string
+      example: RU.CBR.Field.Expected
+        
+
+    ISODateTime:
+      description: "Формат даты и времени"
+      type: string
+      format: date-time
+      example: "2021-07-13T08:35:24+03:00"
+
+    #artyIdentification:
+    # description: "Идентификация юридического или физического лица"
+    # type: object
+    # additionalProperties: false
+    # properties:
+    #   schemeName:
+    #     description: "Наименование идентификационной схемы юридического или физического лица"
+    #     allOf:
+    #       - $ref: "#/components/schemas/PartyIdentificationCode"
+    #   identification:
+    #     description: Уникальный и однозначный идентификатор участника, присвоенный идентифицирующей организацией.
+    #     type: string
+    #     maxLength: 35
+    #     example: "7728240240"
+    # required:
+    #   - identification
+    #   - schemeName
+
+    #artyIdentificationCode:
+    # description: "Схема идентифмкации юридического или физического лица"
+    # type: string
+    # maxLength: 35
+    # enum:
+    #   - RU.CBR.TXID
+    # example: "RU.CBR.TXID"
+
+    #ehicleRegisterRequest:
+    # description: Запрос о привязке транспортного средства к СК
+    # type: object
+    # additionalProperties: false
+    # required:
+    #   - Data
+    # properties:
+    #   Data:
+    #     type: object
+    #     description: Полезная запроса привязки транспортного средства к СК
+    #     required:
+    #       - VIN
+    #     properties:
+    #       VIN:
+    #         description: Идентификационный номер ТС
+    #         type: string
+    #         maxLength: 17
+    #         example: "MR0KA3FS500200000"
+    #       ICCId:
+    #         description: "Идентификатор сим карты устройства слежения "
+    #         type: string
+    #         maxLength: 35
+    #         example: "89701991111XXXX6073"
+    #         nullable: true
+    #       PartyIdentification:
+    #         description: Идентификация Страховой компании
+    #         allOf:
+    #           - $ref: "#/components/schemas/PartyIdentification"
+
+    #ehicleInfoResponse:
+    # description: Ответ о привязке транспортного средства к СК
+    # type: object
+    # additionalProperties: false
+    # required:
+    #   - Data
+    # properties:
+    #   Data:
+    #     type: object
+    #     description: Полезная запроса привязки транспортного средства к СК
+    #     required:
+    #       - vehicleId
+    #       - creationDateTime
+    #       - VIN
+    #     properties:
+    #       vehicleId:
+    #         description: "Идентификатор транспортного средства в системе ЭРА-ГЛОНАСС"
+    #         type: string
+    #         maxLength: 35
+    #         example: "VID-2244-MR0KA3FS500200000"
+    #       creationDateTime:
+    #         description: "Дата и время создания ресурса |ISODateTime"
+    #         allOf:
+    #           - $ref: "#/components/schemas/ISODateTime"
+    #       VIN:
+    #         description: Идентификационный номер ТС
+    #         type: string
+    #         maxLength: 17
+    #         example: "MR0KA3FS500200000"
+    #       ICCId:
+    #         description: "Идентификатор сим карты устройства слежения "
+    #         type: string
+    #         maxLength: 35
+    #         example: "89701991111XXXX6073"
+    #         nullable: true
+    #       status:
+    #         description: Текущий статус ресурса в форме кода | Возможные значения - pending, accepted, deleted
+    #         type: string
+    #         maxLength: 35
+    #         example: "accepted"
+
+    #etIncidentData:
+    # description: Информация о фиксации событии при повреждении ТС
+    # additionalProperties: false
+    # required:
+    #   - Data
+    # properties:
+    #   Data:
+    #     type: object
+    #     description: Полезная нагрузка информации о фиксации событии при повреждении ТС
+    #     required:
+    #       - Incident
+    #     properties:
+    #       Incident:
+    #         type: object
+    #         allOf:
+    #           - $ref: "#/components/schemas/Incident"
+
+    #etIncidentsData:
+    # description: Информация о фиксации событии при повреждении ТС
+    # additionalProperties: false
+    # required:
+    #   - Data
+    # properties:
+    #   Data:
+    #     type: object
+    #     description: Полезная нагрузка информации о фиксации событии при повреждении ТС
+    #     required:
+    #       - Incident
+    #     properties:
+    #       Incident:
+    #         type: array
+    #         items:
+    #             allOf:
+    #              - $ref: "#/components/schemas/Incident"
+
+    #ncident:
+    # type: object
+    # description: Информация о ДТП/ТП
+    # required:
+    #   - incidentId
+    #   - ivsPhoneNumber
+    #   - receiveTime
+    #   # - sentTime
+    #   - vehicleLocation
+    #   # - serviceCenterId
+    #   - eCall
+    #   - needRoadAssistance
+    #   - vehicle
+    # properties:
+    #   incidentId:
+    #     type: integer
+    #     description: ID инцидента (карточки вызова) в системе "ЭРА-ГЛОНАСС"
+    #   ivsPhoneNumber:
+    #     type: string
+    #     description: Телефонный номер бортового устройства
+    #     example: "9410423512"
+    #   receiveTime:
+    #     allOf:
+    #       - $ref: "#/components/schemas/ISODateTime"
+    #     description: Время приема информации о ДТП/ТП
+    #   sentTime:
+    #     allOf:
+    #       - $ref: "#/components/schemas/ISODateTime"
+    #     description: Время передачи информации об инциденте в ГК "Автодор"
+    #     nullable: true
+    #   eCall:
+    #     type: boolean
+    #     description: Признак экстренного вызова
+    #   needRoadAssistance:
+    #     type: boolean
+    #     description: Требуется техническая помощь
+    #   automaticActivation:
+    #     type: boolean
+    #     default: false
+    #     description: Признак автоматической отправки МНД
+    #   crashSevere:
+    #     type: boolean
+    #     default: false
+    #     description: Признак серьезной аварии (вычисляется по показаниям датчиков на ТС)
+    #   VehicleLocation:
+    #     type: object
+    #     description: Географические координаты
+    #     required:
+    #       - latitude
+    #       - longitude
+    #     properties:
+    #       latitude:
+    #         type: number
+    #         format: float
+    #         description: Широта (угловые миллисекунды для PZ 90, градусы для WGS 84)
+    #         example: 55.7558
+    #       longitude:
+    #         type: number
+    #         format: float
+    #         description: Долгота  (угловые миллисекунды для PZ 90, градусы для WGS 84)
+    #         example: 37.6173
+    #       proj:
+    #         type: string
+    #         description: Координатная система (PZ 90, WGS 84)
+    #         example: "WGS 84"
+    #   direction:
+    #     type: integer
+    #     description: Азимут движение ТС в градусах (0-359)
+    #     minimum: 0
+    #     maximum: 359
+    #     example: 45
+    #     nullable: true
+    #   roadPlace:
+    #     type: string
+    #     description: Наименование участка дороги (километра)
+    #     example: "28-ой километр"
+    #     nullable: true
+    #   serviceCenterId:
+    #     type: string
+    #     description: Идентификатор сервисного центра ГК "АВТОДОР"
+    #     example: "SC01"
+    #     nullable: true
+    #   declarant:
+    #     type: object
+    #     description: Данные заявителя
+    #     properties:
+    #       fullName:
+    #         type: string
+    #         description: Полное имя
+    #         example: "Иванов Иван Иванович"
+    #         nullable: true
+    #       locale:
+    #         type: string
+    #         description: Язык общения
+    #         example: "RU"
+    #         nullable: true
+    #       phoneNumber:
+    #         type: string
+    #         description: Телефонный номер
+    #         example: "+7(903)123-45-67"
+    #         nullable: true
+    #   Vehicle:
+    #     type: object
+    #     description: Информация о ТС
+    #     properties:
+    #       VIN:
+    #         type: string
+    #         description: ВИН-код
+    #         example: "XTAFS035LK1131973"
+    #       VBN:
+    #         type: string
+    #         description: Номер кузова
+    #         example: "XTAFS035LK1131973"
+    #         nullable: true
+    #       model:
+    #         type: string
+    #         description: Модель
+    #         example: "LADA LARGUS"
+    #         nullable: true
+    #       registrationNumber:
+    #         type: string
+    #         description: ГРЗ
+    #         example: "А704СХ750"
+    #         nullable: true
+    #       class:
+    #         description: Категория ТС
+    #         allOf:
+    #           - $ref: "#/components/schemas/VehicleTypeCode"
+    #         nullable: true
+    #   EventAddress:
+    #     description: "Информация, которая находит и идентифицирует адрес"
+    #     allOf:
+    #       - $ref: "#/components/schemas/EventAddressType"
+
+    #ehicleTypeCode:
+    # description: Код Категории ТС
+    # type: string
+    # maxLength: 35
+    # enum:
+    #   - М1 | пассажирский (категория М1)
+    #   - M2 | автобус (категория М2)
+    #   - М3 | автобус (категория М3)
+    #   - N1 | легкий грузовик (категория N1)
+    #   - N2 | грузовой автомобиль (категория N2)
+    #   - N3 | грузовой автомобиль (категория N3)
+    #   - L1e | мотоцикл (категория L1e)
+    #   - L2e | мотоцикл (категория L2e)
+    #   - L3e | мотоцикл (категория L3e)
+    #   - L4e | мотоцикл (категория L4e)
+    #   - L5e | мотоцикл (категория L5e)
+    #   - L6e | мотоцикл (категория L6e)
+    #   - L7e | мотоцикл (категория L7e)
+
+    #ventAddressType:
+    # description: "Информация, которая находит и идентифицирует адрес"
+    # type: object
+    # additionalProperties: false
+    # properties:
+    #   TaxCode:
+    #     description: "Код ОКТМО"
+    #     type: string
+    #     maxLength: 8
+    #     example: "41000000"
+    #     nullable: true
+    #   streetName:
+    #     description: "Наименование улицы или проспекта"
+    #     type: string
+    #     maxLength: 70
+    #     example: "М-11, скоростная автомобильная дорога Москва - Санкт-Петербург"
+    #     nullable: true
+    #   townName:
+    #     description: "Наименование населённого пункта или территории, находящейся вне границ поселений"
+    #     type: string
+    #     maxLength: 35
+    #     example: "Cельское поселение Городенское"
+    #     nullable: true
+    #   countrySubDivision:
+    #     description: "Наименование и тип субъекта Российской Федерации"
+    #     type: string
+    #     maxLength: 35
+    #     example: "Тверская область"
+    #     nullable: true
+    #   country:
+    #     description: "Название страны в кодированной форме"
+    #     type: string
+    #     pattern: ^[A-Z]{2}$
+    #     maxLength: 2
+    #     example: "RU"
+
+    # VehiclePropertiesType:
+    #   description: "Свойства транспортного средства"
+    #   type: object
+    #   additionalProperties: false
+    #   properties:
+    #     Color:
+    #       description: Цвет ТС
+    #       type: string
+    #       maxLength: 35
+    #       example: "ТЕМНО-КОРИЧНЕВЫЙ"
+    #     Model:
+    #       description: Модель ТС
+    #       type: string
+    #       maxLength: 35
+    #       example: "MERCEDES-BENZ GLC 220 D 4MATIC"
+    #     RegNumber:
+    #       description: ГРЗ ТС
+    #       type: string
+    #       example: "СXXXОТ799"
+    #       maxLength: 35
